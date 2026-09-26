@@ -16,7 +16,7 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 *Unity'den bağımsız, konsolda ve test edilebilir saf C# sınıfları.*
 - [x] **1.1 Ticaret Malı ve Envanter:** `Item`, `Inventory` (Ağırlık kontrolü, eşya ekleme/çıkarma, bozulma).
 - [x] **1.2 Kervan Modeli:** `Caravan` (Binek hayvanları, muhafızlar, işçiler, günlük erzak tüketimi, hız formülü).
-- [ ] **1.3 Ekonomi ve Pazar:** `City`, `Market`, `TradeCalculator` (Arz-talep ve mesafe bazlı dinamik fiyat hesabı).
+- [x] **1.3 Ekonomi ve Pazar:** `City`, `Market`, `TradeCalculator` (Arz-talep ve mesafe bazlı dinamik fiyat hesabı).
 - [ ] **1.4 Birim Testleri / Doğrulama:** Çekirdek mantığın hesaplamalarının doğrulanması.
 
 ---
