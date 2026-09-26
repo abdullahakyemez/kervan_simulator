@@ -46,8 +46,8 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 
 ---
 
-### [ ] FAZ 5: İyileştirme (Game Feel), Ses, Kayıt ve Mobil Çıkış
-- [ ] **5.1 Kayıt Sistemi (Save/Load):** `System.IO` ile JSON tabanlı kayıt/yükleme.
-- [ ] **5.2 Ses & Müzik:** `AudioManager` (Ney, kopuz, pazar ambiyansı, sikke sesleri).
-- [ ] **5.3 UI Animasyonları & Game Feel:** DOTween ile akıcı geçişler.
-- [ ] **5.4 Mobil Optimizasyon:** Dokunmatik kontroller ve Android/iOS derlemesi.
+### [x] FAZ 5: İyileştirme (Game Feel), Ses, Kayıt ve Mobil Çıkış
+- [x] **5.1 Kayıt Sistemi (Save/Load):** `System.IO` ile JSON tabanlı atomik kayıt/yükleme (`SaveData`, `SaveManager`).
+- [x] **5.2 Ses & Müzik:** `AudioManager` (Ney, kopuz, pazar ambiyansı, sikke sesleri, yumuşak geçişler).
+- [x] **5.3 UI Animasyonları & Game Feel:** `UIPolishAndAnimations` (Buton tıklama esnemesi, ses tetikleme).
+- [x] **5.4 Mobil Optimizasyon:** `SafeAreaHandler` ile modern Android/iOS çentik ve dinamik ada uyumluluğu.

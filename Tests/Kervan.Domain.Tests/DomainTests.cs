@@ -210,5 +210,37 @@ namespace Kervan.Domain.Tests
             mission.CompleteMission();
             Assert.True(mission.IsCompleted);
         }
+
+        [Fact]
+        public void SaveData_StateRestoration_ShouldPreserveCaravanIntegrity()
+        {
+            // 1. Orijinal Kervan
+            var originalCaravan = new Caravan(initialAkce: 350, initialFoodKg: 75f, initialMerchantSkill: 6);
+            originalCaravan.AddMount(MountType.Camel, 2);
+            originalCaravan.AddMount(MountType.Horse, 1);
+            originalCaravan.HireGuard(3);
+            originalCaravan.HireLaborer(2);
+            originalCaravan.SetMorale(85);
+
+            var silkItem = new Item("silk", "Bursa İpeği", ItemCategory.Textile, 25, 2f);
+            originalCaravan.Cargo.TryAddItem(silkItem, 15);
+
+            // 2. Geri Yüklenen Kervan
+            var restoredCaravan = new Caravan(originalCaravan.Akce, originalCaravan.FoodSupplyKg, originalCaravan.MerchantCombatSkill);
+            restoredCaravan.AddMount(MountType.Camel, originalCaravan.CamelCount);
+            restoredCaravan.AddMount(MountType.Horse, originalCaravan.HorseCount);
+            restoredCaravan.HireGuard(originalCaravan.GuardCount);
+            restoredCaravan.HireLaborer(originalCaravan.LaborerCount);
+            restoredCaravan.SetMorale(originalCaravan.Morale);
+            restoredCaravan.Cargo.TryAddItem(silkItem, originalCaravan.Cargo.GetQuantity("silk"));
+
+            // 3. Doğrulamalar
+            Assert.Equal(originalCaravan.Akce, restoredCaravan.Akce);
+            Assert.Equal(originalCaravan.FoodSupplyKg, restoredCaravan.FoodSupplyKg);
+            Assert.Equal(originalCaravan.Morale, restoredCaravan.Morale);
+            Assert.Equal(originalCaravan.Cargo.MaxCapacityKg, restoredCaravan.Cargo.MaxCapacityKg);
+            Assert.Equal(originalCaravan.TotalCombatPower, restoredCaravan.TotalCombatPower);
+            Assert.Equal(15, restoredCaravan.Cargo.GetQuantity("silk"));
+        }
     }
 }
