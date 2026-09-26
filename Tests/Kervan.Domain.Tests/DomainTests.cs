@@ -159,5 +159,56 @@ namespace Kervan.Domain.Tests
             Assert.True(mountainDays <= highwayDays, "Dağ kestirmesi gün olarak daha kısa veya eşit olmalı.");
             Assert.True(mountainPass.DangerFactor > highway.DangerFactor, "Dağ yolunun tehlikesi taş yoldan yüksek olmalı.");
         }
+
+        [Fact]
+        public void EncounterStrategy_CombatAndBribe_ShouldResolveAccurately()
+        {
+            var rng = new System.Random(42); // Sabit seed ile öngörülebilir test
+            var caravan = new Caravan(initialAkce: 200, initialFoodKg: 50f, initialMerchantSkill: 5);
+            caravan.HireGuard(4); // 4 muhafız + 5 tüccar skilli = 50 + 60 = 110 Savaş Gücü
+
+            // 1. Düşük tehditli kurt saldırısı (Tehdit: 25)
+            var wolfEncounter = new EncounterData(EncounterType.WolfPack, "Kurtlar", "Aç kurtlar", threatPower: 25, demandedBribeAkce: 0, potentialLootAkce: 30);
+            var combatStrategy = new CombatStrategy();
+            var combatResult = combatStrategy.Execute(caravan, wolfEncounter, rng);
+
+            Assert.True(combatResult.IsSuccess, "Güçlü kervan kurtları yenmeli.");
+            Assert.True(combatResult.GoldChange > 0, "Ganimet kazanılmalı.");
+
+            // 2. Rüşvet Testi
+            var banditEncounter = new EncounterData(EncounterType.BanditAmbush, "Haydutlar", "Yol kesildi", threatPower: 80, demandedBribeAkce: 50);
+            int goldBefore = caravan.Akce;
+            var bribeStrategy = new BribeStrategy();
+            var bribeResult = bribeStrategy.Execute(caravan, banditEncounter, rng);
+
+            Assert.True(bribeResult.IsSuccess, "Akçesi yeten kervan rüşvet verebilmeli.");
+            Assert.Equal(goldBefore - 50, caravan.Akce);
+        }
+
+        [Fact]
+        public void EspionageMission_CollectAndDeliver_ShouldRewardPlayer()
+        {
+            var mission = new EspionageMission(
+                missionId: "test_intel",
+                title: "Konya Casusluğu",
+                description: "Konya'dan haber topla, Bursa'ya ulaştır",
+                targetCityId: "konya",
+                deliveryCityId: "bursa",
+                rewardAkce: 100,
+                reputationGain: 15
+            );
+
+            Assert.False(mission.IsIntelCollected);
+            Assert.False(mission.IsCompleted);
+
+            // 1. Hedef şehre varış ve istihbarat toplama
+            mission.MarkIntelCollected();
+            Assert.True(mission.IsIntelCollected);
+            Assert.False(mission.IsCompleted);
+
+            // 2. Teslimat
+            mission.CompleteMission();
+            Assert.True(mission.IsCompleted);
+        }
     }
 }

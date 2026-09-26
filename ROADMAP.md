@@ -38,11 +38,11 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 
 ---
 
-### [ ] FAZ 4: Olaylar, Karşılaşmalar ve İstihbarat
+### [x] FAZ 4: Olaylar, Karşılaşmalar ve İstihbarat
 *Rastlantısal olaylar, taktiksel kararlar ve casusluk mekaniği.*
-- [ ] **4.1 Karşılaşma Motoru (Event Engine):** Seyahat durum makinesi (State Machine), günlük risk zar hesapları.
-- [ ] **4.2 Tehdit Çözüm Sistemi (Strategy Pattern):** Savaş, Rüşvet, İkna, Kaçış sonuç hesapları.
-- [ ] **4.3 İstihbarat ve Görev Sistemi:** Osmanlı Beyliği'ne bilgi aktarma, gizli mektup taşıma görevleri.
+- [x] **4.1 Karşılaşma Motoru (Event Engine):** Seyahat durum makinesi (`TravelStateMachine`, `TravelState`, `EncounterType`, `EncounterData`).
+- [x] **4.2 Tehdit Çözüm Sistemi (Strategy Pattern):** Savaş, Rüşvet, İkna, Kaçış stratejileri (`IEncounterStrategy`, `CombatStrategy`, `BribeStrategy`, `FleeStrategy`, `NegotiateStrategy`, `EncounterDialogUI`).
+- [x] **4.3 İstihbarat ve Görev Sistemi:** Osmanlı Beyliği'ne bilgi aktarma, gizli mektup taşıma görevleri (`EspionageMission`, `EspionageService`).
 
 ---
 
