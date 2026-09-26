@@ -4,11 +4,11 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 
 ---
 
-### [ ] FAZ 0: Temel Ortam ve Proje Yapısı
+### [x] FAZ 0: Temel Ortam ve Proje Yapısı
 - [x] Mimari ve oyun tasarım belgelerinin oluşturulması (`GDD.md`, `ROADMAP.md`, `ARCHITECTURE.md`).
 - [x] Git deposunun başlatılması (`git init`) ve kurumsal Unity/C# `.gitignore` dosyasının eklenmesi.
-- [ ] Unity Hub ve Unity LTS (Örn: Unity 6 veya 2022.3 LTS) kurulumu.
-- [ ] Unity 2D Projesinin oluşturulması ve kurumsal klasör yapısının (`_Scripts/Domain`, `_Scripts/Presentation`, `_Scripts/Data`) açılması.
+- [x] Unity Hub ve Unity 6 (`6000.6.3f1`) kurulumunun doğrulanması.
+- [x] Unity 2D (URP) proje şablonunun yapılandırılması ve kurumsal klasör yapısının (`_Scripts/Domain`, `_Scripts/Presentation`, `_Scripts/Data`, `Art`, `Audio`) oluşturulması.
 
 ---
 
