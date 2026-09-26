@@ -21,11 +21,11 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 
 ---
 
-### [ ] FAZ 2: Veri Mimarisi ve İçerik Tasarımı (Data Layer)
+### [x] FAZ 2: Veri Mimarisi ve İçerik Tasarımı (Data Layer)
 *Oyun dünyasının zenginleştirilmesi ve ScriptableObject / JSON entegrasyonu.*
 - [x] **2.1 Eşya Veri Tabanı:** 14. yy mallarının ScriptableObject tanımları (`ItemDataSO`, `ItemDatabaseSO`).
 - [x] **2.2 Şehirler ve Harita Verisi:** Şehirlerin coğrafi ve ekonomik profilleri (`CityDataSO`, `CityDatabaseSO`).
-- [ ] **2.3 Tarihi Olay Verisi:** `HistoricalEventData` (Veba, Beylik çatışmaları, kıtlık).
+- [x] **2.3 Tarihi Olay Verisi:** `HistoricalEventDataSO`, `EventDatabaseSO` (Veba, Beylik çatışmaları, kıtlık, istihbarat).
 
 ---
 
