@@ -33,7 +33,7 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 *Graf tabanlı seyahat ve modern 2D flat arayüz.*
 - [x] **3.1 Harita Graf Sistemi (Node-Graph):** Şehir düğümleri ve rota bağlantıları (`TerrainType`, `MapRoute`, `MapGraph`, `MapRouteDataSO`).
 - [x] **3.2 UI Tema & Temel Ekranlar:** `GameManager` servisi, `TopStatusBarUI` (Akçe, Erzak, Kapasite, Moral, Tarih), `ScreenNavigationManager`.
-- [ ] **3.3 Pazar Ekranı:** Alım-satım arayüzü, sepet mekanizması.
+- [x] **3.3 Pazar Ekranı:** Alım-satım arayüzü, sepet mekanizması (`MarketScreenUI`, `MarketItemEntryUI`).
 - [ ] **3.4 Kervan Yönetim Ekranı:** Muhafız kiralama, binek hayvanı satın alma, erzak depolama.
 
 ---
