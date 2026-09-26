@@ -31,7 +31,7 @@ Bu belge projenin canlı ilerleme kaydıdır. Tamamlanan her görev `[x]` olarak
 
 ### [ ] FAZ 3: Harita, Rota Seçimi ve Kullanıcı Arayüzü (UI)
 *Graf tabanlı seyahat ve modern 2D flat arayüz.*
-- [ ] **3.1 Harita Graf Sistemi (Node-Graph):** Şehir düğümleri ve rota bağlantıları (Dağ Yolu vs Vadi Yolu).
+- [x] **3.1 Harita Graf Sistemi (Node-Graph):** Şehir düğümleri ve rota bağlantıları (`TerrainType`, `MapRoute`, `MapGraph`, `MapRouteDataSO`).
 - [ ] **3.2 UI Tema & Temel Ekranlar:** Parşömen tarzı UI, Üst Bilgi Barı (Akçe, Erzak, Kapasite).
 - [ ] **3.3 Pazar Ekranı:** Alım-satım arayüzü, sepet mekanizması.
 - [ ] **3.4 Kervan Yönetim Ekranı:** Muhafız kiralama, binek hayvanı satın alma, erzak depolama.

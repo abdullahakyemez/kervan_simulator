@@ -108,5 +108,56 @@ namespace Kervan.Domain.Tests
             // Yol masraflarına (muhafız maaşları) rağmen kervanın son parası başlangıç parasından fazla olmalı
             Assert.True(caravan.Akce > startAkce, $"Tüccar kâr etmiş olmalı. Başlangıç: {startAkce}, Bitiş: {caravan.Akce}");
         }
+
+        [Fact]
+        public void MapGraph_ShouldProvideRouteChoicesAndCalculateTravelDays()
+        {
+            // 1. Grafi Oluştur
+            var graph = new MapGraph();
+
+            // 2. Bursa -> İznik arasında 2 alternatif rota tanımla
+            // Rota A: Güvenli Taş Yol (90 km, %5 tehlike)
+            var highway = new MapRoute(
+                routeId: "bursa_iznik_highway",
+                routeName: "Bursa-İznik Kervan Yolu",
+                fromCityId: "bursa",
+                toCityId: "iznik",
+                terrain: TerrainType.PavedRoad,
+                distanceKm: 90f,
+                dangerFactor: 0.05f
+            );
+
+            // Rota B: Kestirme Dağ Patikası (50 km, %40 haydut tehlikesi)
+            var mountainPass = new MapRoute(
+                routeId: "bursa_iznik_mountain",
+                routeName: "Katırlı Dağ Patikası",
+                fromCityId: "bursa",
+                toCityId: "iznik",
+                terrain: TerrainType.MountainPass,
+                distanceKm: 50f,
+                dangerFactor: 0.40f
+            );
+
+            graph.AddRoute(highway, isBidirectional: true);
+            graph.AddRoute(mountainPass, isBidirectional: true);
+
+            // 3. Kervanı Hazırla
+            var caravan = new Caravan(initialAkce: 100, initialFoodKg: 50f);
+
+            // 4. Testler
+            var routesFromBursa = graph.GetAvailableRoutesFromCity("bursa");
+            Assert.Equal(2, routesFromBursa.Count);
+
+            // Dönüş rotalarının da çift yönlü oluştuğunu doğrula
+            var routesFromIznik = graph.GetAvailableRoutesFromCity("iznik");
+            Assert.Equal(2, routesFromIznik.Count);
+
+            // Gün hesabı doğrulaması: Kestirme dağ yolu daha kısa sürmeli ama tehlikesi %40 olmalı
+            int highwayDays = highway.CalculateEstimatedDays(caravan);
+            int mountainDays = mountainPass.CalculateEstimatedDays(caravan);
+
+            Assert.True(mountainDays <= highwayDays, "Dağ kestirmesi gün olarak daha kısa veya eşit olmalı.");
+            Assert.True(mountainPass.DangerFactor > highway.DangerFactor, "Dağ yolunun tehlikesi taş yoldan yüksek olmalı.");
+        }
     }
 }
