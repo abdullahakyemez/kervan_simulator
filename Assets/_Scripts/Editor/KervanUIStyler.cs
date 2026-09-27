@@ -25,7 +25,7 @@ namespace Kervan.Editor
         [MenuItem("Kervan/Arayüzü Otomatik Tasarla & Hizala (Landscape 16:9)", false, 1)]
         public static void PolishAllUI()
         {
-            var canvas = Object.FindFirstObjectByType<Canvas>();
+            var canvas = Object.FindAnyObjectByType<Canvas>();
             if (canvas == null)
             {
                 EditorUtility.DisplayDialog("Uyarı", "Sahnede Canvas bulunamadı!", "Tamam");
@@ -403,7 +403,7 @@ namespace Kervan.Editor
             }
         }
 
-        private static Transform? FindChildRecursive(Transform parent, string childName)
+        private static Transform FindChildRecursive(Transform parent, string childName)
         {
             if (parent.name == childName) return parent;
 
@@ -472,7 +472,7 @@ namespace Kervan.Editor
                 txt.fontSize = fontSize;
                 txt.fontStyle |= FontStyles.Bold;
                 txt.alignment = TextAlignmentOptions.Center;
-                txt.enableWordWrapping = true;
+                txt.textWrappingMode = TextWrappingModes.Normal;
                 txt.enableAutoSizing = true;
                 txt.fontSizeMin = 13;
                 txt.fontSizeMax = fontSize;
