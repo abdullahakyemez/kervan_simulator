@@ -62,6 +62,9 @@ namespace Kervan.Editor
             // 6. Pazar Panelini ve Satır Şablonunu Düzenle
             PolishMarketPanel(canvas);
 
+            // 7. Harita Panelini Düzenle
+            PolishMapPanel(canvas);
+
             // Sahneyi kaydedilebilir olarak işaretle
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
                 UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
@@ -174,17 +177,25 @@ namespace Kervan.Editor
                 rect.offsetMax = new Vector2(-20, -165);
             }
 
-            var statsText = panel.Find("Txt_Stats")?.GetComponent<TextMeshProUGUI>();
+            // Metinler ve Konumlandırma
+            PositionElement(panel, "Txt_Stats", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -30), new Vector2(960, 250));
+            var statsText = FindChildRecursive(panel, "Txt_Stats")?.GetComponent<TextMeshProUGUI>();
             if (statsText != null)
             {
                 statsText.color = ColorParchment;
                 statsText.fontSize = 22;
-                statsText.lineSpacing = 15;
+                statsText.lineSpacing = 12;
+                statsText.alignment = TextAlignmentOptions.TopLeft;
             }
 
-            // Buton renkleri
+            // Buton Konumları
+            PositionElement(panel, "Btn_HireGuard", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(-240, -320), new Vector2(460, 85));
             SetButtonColor(panel, "Btn_HireGuard", ColorBuyButton);
+
+            PositionElement(panel, "Btn_BuyCamel", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(240, -320), new Vector2(460, 85));
             SetButtonColor(panel, "Btn_BuyCamel", ColorNavButton);
+
+            PositionElement(panel, "Btn_BuyFood", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -430), new Vector2(520, 85));
             SetButtonColor(panel, "Btn_BuyFood", ColorSoftGreen * 0.7f);
         }
 
@@ -307,20 +318,118 @@ namespace Kervan.Editor
             rect.sizeDelta = size;
         }
 
-        private static void SetTextColor(Transform parent, string childName, Color color, float size, bool isBold)
+        private static void PolishMapPanel(Canvas canvas)
         {
-            var txt = parent.Find(childName)?.GetComponent<TextMeshProUGUI>();
+            var panel = canvas.transform.Find("Panel_Harita");
+            if (panel == null) return;
+
+            var img = panel.GetComponent<Image>();
+            if (img != null) img.color = ColorDarkWalnut;
+
+            var rect = panel.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = new Vector2(20, 155);
+                rect.offsetMax = new Vector2(-20, -165);
+            }
+
+            // 1. Rota Seçim Alt Paneli (SubPanel_RouteSelection)
+            var routeSub = FindChildRecursive(panel, "SubPanel_RouteSelection");
+            if (routeSub != null)
+            {
+                StretchFull(routeSub);
+
+                // Mevcut Şehir Başlığı
+                PositionElement(routeSub, "Txt_CurrentLocation", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -35), new Vector2(960, 60));
+                SetTextColor(routeSub, "Txt_CurrentLocation", ColorGold, 26, true, TextAlignmentOptions.Center);
+
+                // Rota Seçim Butonları (Yan Yana)
+                PositionElement(routeSub, "Btn_RouteHighway", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(-240, -130), new Vector2(460, 85));
+                SetButtonColor(routeSub, "Btn_RouteHighway", ColorBuyButton);
+
+                PositionElement(routeSub, "Btn_RouteMountain", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(240, -130), new Vector2(460, 85));
+                SetButtonColor(routeSub, "Btn_RouteMountain", ColorSellButton);
+
+                // Rota Başlık ve Detay Kartı
+                PositionElement(routeSub, "Txt_RouteTitle", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -210), new Vector2(960, 50));
+                SetTextColor(routeSub, "Txt_RouteTitle", ColorGold, 24, true, TextAlignmentOptions.Center);
+
+                PositionElement(routeSub, "Txt_RouteDetails", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -370), new Vector2(920, 260));
+                var detailsTxt = FindChildRecursive(routeSub, "Txt_RouteDetails")?.GetComponent<TextMeshProUGUI>();
+                if (detailsTxt != null)
+                {
+                    detailsTxt.color = ColorParchment;
+                    detailsTxt.fontSize = 21;
+                    detailsTxt.lineSpacing = 14;
+                    detailsTxt.alignment = TextAlignmentOptions.TopLeft;
+                }
+
+                // Yola Çık Butonu
+                PositionElement(routeSub, "Btn_StartJourney", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -560), new Vector2(560, 95));
+                SetButtonColor(routeSub, "Btn_StartJourney", ColorGold * 0.85f);
+            }
+
+            // 2. Seyahat İlerleme Alt Paneli (SubPanel_TravelProgress)
+            var travelSub = FindChildRecursive(panel, "SubPanel_TravelProgress");
+            if (travelSub != null)
+            {
+                StretchFull(travelSub);
+
+                PositionElement(travelSub, "Txt_TravelStatus", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -160), new Vector2(960, 70));
+                SetTextColor(travelSub, "Txt_TravelStatus", ColorGold, 28, true, TextAlignmentOptions.Center);
+
+                PositionElement(travelSub, "Slider_Progress", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -260), new Vector2(850, 45));
+
+                PositionElement(travelSub, "Btn_AdvanceDay", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -390), new Vector2(520, 95));
+                SetButtonColor(travelSub, "Btn_AdvanceDay", ColorSoftGreen * 0.75f);
+            }
+        }
+
+        private static void StretchFull(Transform target)
+        {
+            var rect = target.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+            }
+        }
+
+        private static Transform? FindChildRecursive(Transform parent, string childName)
+        {
+            if (parent.name == childName) return parent;
+
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                var result = FindChildRecursive(parent.GetChild(i), childName);
+                if (result != null) return result;
+            }
+
+            return null;
+        }
+
+        private static void SetTextColor(Transform parent, string childName, Color color, float size, bool isBold, TextAlignmentOptions alignment = TextAlignmentOptions.Left)
+        {
+            var child = FindChildRecursive(parent, childName);
+            if (child == null) return;
+
+            var txt = child.GetComponent<TextMeshProUGUI>();
             if (txt != null)
             {
                 txt.color = color;
                 txt.fontSize = size;
+                txt.alignment = alignment;
                 if (isBold) txt.fontStyle |= FontStyles.Bold;
             }
         }
 
         private static void SetButtonColor(Transform parent, string buttonName, Color color)
         {
-            var btn = parent.Find(buttonName);
+            var btn = FindChildRecursive(parent, buttonName);
             if (btn == null) return;
 
             var img = btn.GetComponent<Image>();
@@ -330,7 +439,9 @@ namespace Kervan.Editor
             if (txt != null)
             {
                 txt.color = ColorParchment;
+                txt.fontSize = 24;
                 txt.fontStyle |= FontStyles.Bold;
+                txt.alignment = TextAlignmentOptions.Center;
             }
         }
     }
