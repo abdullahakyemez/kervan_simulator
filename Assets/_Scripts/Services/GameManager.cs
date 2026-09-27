@@ -91,6 +91,21 @@ namespace Kervan.Services
             {
                 CurrentCity = new City("bursa", "Bursa", "Osmanlı Beyliği", 100f, 200f);
             }
+
+            // Eğer pazarda henüz mal yoksa varsayılan 14. yy Bursa bedesteni mallarını tohumla (Seed)
+            if (CurrentCity.LocalMarket.GetAllGoods().Count == 0)
+            {
+                var silk = new Item("silk", "Bursa İpeği", ItemCategory.Textile, basePrice: 20, weightKg: 2f);
+                var wheat = new Item("wheat", "Anadolu Buğdayı", ItemCategory.Food, basePrice: 5, weightKg: 5f, isPerishable: true, shelfLifeDays: 90);
+                var steel = new Item("damascus_steel", "Şam Çeliği", ItemCategory.Metal, basePrice: 45, weightKg: 8f);
+                var oliveOil = new Item("olive_oil", "Zeytinyağı", ItemCategory.Food, basePrice: 12, weightKg: 3f);
+
+                // Bursa ipeğin merkezidir: İpek ucuz (0.6x), Şam çeliği ise uzaktan gelir primli (1.4x)
+                CurrentCity.LocalMarket.AddOrUpdateGood(silk, stock: 40, multiplier: 0.6f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(wheat, stock: 100, multiplier: 1.0f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(steel, stock: 12, multiplier: 1.4f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(oliveOil, stock: 35, multiplier: 0.8f);
+            }
         }
 
         private void Start()
