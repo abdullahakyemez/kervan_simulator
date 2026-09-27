@@ -26,19 +26,44 @@ namespace Kervan.Presentation
         [SerializeField] private Button? _negotiateButton;
         [SerializeField] private Button? _continueJourneyButton;
 
+        private void Awake()
+        {
+            SetupButtons();
+        }
+
         private void Start()
         {
-            if (TravelStateMachine.Instance != null)
-            {
-                TravelStateMachine.Instance.OnEncounterTriggered += HandleEncounterTriggered;
-                TravelStateMachine.Instance.OnEncounterResolved += HandleEncounterResolved;
-            }
-
-            SetupButtons();
+            SubscribeToEvents();
             CloseDialog();
         }
 
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
+
         private void OnDestroy()
+        {
+            UnsubscribeFromEvents();
+        }
+
+        private void OnDisable()
+        {
+            // Eğer root bu obje ise devre dışı kalırken unhook etmeyelim ki FSM sinyali geldiğinde uyanabilsin
+        }
+
+        private void SubscribeToEvents()
+        {
+            if (TravelStateMachine.Instance != null)
+            {
+                TravelStateMachine.Instance.OnEncounterTriggered -= HandleEncounterTriggered;
+                TravelStateMachine.Instance.OnEncounterTriggered += HandleEncounterTriggered;
+                TravelStateMachine.Instance.OnEncounterResolved -= HandleEncounterResolved;
+                TravelStateMachine.Instance.OnEncounterResolved += HandleEncounterResolved;
+            }
+        }
+
+        private void UnsubscribeFromEvents()
         {
             if (TravelStateMachine.Instance != null)
             {
@@ -49,26 +74,32 @@ namespace Kervan.Presentation
 
         private void SetupButtons()
         {
+            _combatButton?.onClick.RemoveAllListeners();
             _combatButton?.onClick.AddListener(() =>
-                TravelStateMachine.Instance.ResolveEncounter(new CombatStrategy()));
+                TravelStateMachine.Instance?.ResolveEncounter(new CombatStrategy()));
 
+            _bribeButton?.onClick.RemoveAllListeners();
             _bribeButton?.onClick.AddListener(() =>
-                TravelStateMachine.Instance.ResolveEncounter(new BribeStrategy()));
+                TravelStateMachine.Instance?.ResolveEncounter(new BribeStrategy()));
 
+            _fleeButton?.onClick.RemoveAllListeners();
             _fleeButton?.onClick.AddListener(() =>
-                TravelStateMachine.Instance.ResolveEncounter(new FleeStrategy()));
+                TravelStateMachine.Instance?.ResolveEncounter(new FleeStrategy()));
 
+            _negotiateButton?.onClick.RemoveAllListeners();
             _negotiateButton?.onClick.AddListener(() =>
-                TravelStateMachine.Instance.ResolveEncounter(new NegotiateStrategy()));
+                TravelStateMachine.Instance?.ResolveEncounter(new NegotiateStrategy()));
 
+            _continueJourneyButton?.onClick.RemoveAllListeners();
             _continueJourneyButton?.onClick.AddListener(CloseDialog);
         }
 
         private void HandleEncounterTriggered(EncounterData encounter)
         {
-            if (_dialogRoot == null) return;
-
-            _dialogRoot.SetActive(true);
+            if (_dialogRoot != null)
+                _dialogRoot.SetActive(true);
+            else
+                gameObject.SetActive(true);
 
             if (_titleText != null) _titleText.text = encounter.Title;
             if (_descriptionText != null) _descriptionText.text = encounter.Description;

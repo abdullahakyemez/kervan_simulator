@@ -62,11 +62,14 @@ namespace Kervan.Services
             ActiveRoute = route;
             DestinationCity = destination;
             TraveledDistanceKm = 0f;
+            _hadEncounterThisJourney = false;
 
             ChangeState(TravelState.OnTheRoad);
             OnTravelProgress?.Invoke(TraveledDistanceKm, ActiveRoute.DistanceKm);
             return true;
         }
+
+        private bool _hadEncounterThisJourney;
 
         /// <summary>
         /// Yolda 1 günlük seyahat adımını simüle eder (Oyuncu 'İlerle' butonuna bastığında veya otomatik).
@@ -83,13 +86,24 @@ namespace Kervan.Services
 
             // 2. Kilometre ilerlemesi yap
             float dailySpeed = caravan.CalculateDailySpeedKm();
-            TraveledDistanceKm += dailySpeed;
+            TraveledDistanceKm = Math.Min(ActiveRoute.DistanceKm, TraveledDistanceKm + dailySpeed);
             OnTravelProgress?.Invoke(TraveledDistanceKm, ActiveRoute.DistanceKm);
 
-            // 3. Karşılaşma/Pusu zar atışı kontrolü (Yol tehlike oranına göre)
-            float encounterChance = ActiveRoute.DangerFactor * 0.45f;
-            if (_rng.NextDouble() < encounterChance)
+            // 3. Karşılaşma/Pusu kontrolü (Dağ patikasında en az 1 karşılaşma yaşanmasını temin eder)
+            bool shouldTriggerEncounter = false;
+            if (ActiveRoute.DangerFactor >= 0.30f && !_hadEncounterThisJourney)
             {
+                // Tehlikeli yolda yüksek pusu ihtimali veya yol bitiyorsa pusu
+                shouldTriggerEncounter = (_rng.NextDouble() < 0.65) || (TraveledDistanceKm >= ActiveRoute.DistanceKm);
+            }
+            else if (!_hadEncounterThisJourney)
+            {
+                shouldTriggerEncounter = _rng.NextDouble() < ActiveRoute.DangerFactor;
+            }
+
+            if (shouldTriggerEncounter)
+            {
+                _hadEncounterThisJourney = true;
                 TriggerEncounter();
                 return;
             }
@@ -97,7 +111,7 @@ namespace Kervan.Services
             // 4. Hedefe varıldı mı?
             if (TraveledDistanceKm >= ActiveRoute.DistanceKm)
             {
-                CompleteJourney();
+                ChangeState(TravelState.Arrived);
             }
         }
 
@@ -132,7 +146,7 @@ namespace Kervan.Services
 
             if (TraveledDistanceKm >= (ActiveRoute?.DistanceKm ?? 0f))
             {
-                CompleteJourney();
+                ChangeState(TravelState.Arrived);
             }
             else
             {
@@ -142,15 +156,20 @@ namespace Kervan.Services
             return result;
         }
 
-        private void CompleteJourney()
+        /// <summary>
+        /// Kervanın şehre girişini tamamlar ve durumu InCity yapar.
+        /// </summary>
+        public void CompleteJourney()
         {
             if (DestinationCity == null) return;
 
-            ChangeState(TravelState.Arrived);
-            GameManager.Instance.ArriveAtCity(DestinationCity);
-
+            var destination = DestinationCity;
             ActiveRoute = null;
             DestinationCity = null;
+            TraveledDistanceKm = 0f;
+            _hadEncounterThisJourney = false;
+
+            GameManager.Instance.ArriveAtCity(destination);
             ChangeState(TravelState.InCity);
         }
 

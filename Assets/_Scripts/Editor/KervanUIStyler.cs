@@ -401,32 +401,63 @@ namespace Kervan.Editor
             GameObject dialogObj;
             if (dialogTrans == null)
             {
-                dialogObj = new GameObject("Dialog_Encounter", typeof(RectTransform), typeof(Image));
+                dialogObj = new GameObject("Dialog_Encounter", typeof(RectTransform));
                 dialogObj.transform.SetParent(canvas.transform, false);
                 Undo.RegisterCreatedObjectUndo(dialogObj, "Create Dialog_Encounter");
             }
             else
             {
                 dialogObj = dialogTrans.gameObject;
+                // Kök obje üzerindeki eski Image varsa kaldır (görünmez kalmalı)
+                var oldImg = dialogObj.GetComponent<Image>();
+                if (oldImg != null)
+                {
+                    Object.DestroyImmediate(oldImg);
+                }
             }
 
-            // Tam ekran karartma perdesi (Raycast engelleyici)
-            var overlayRect = dialogObj.GetComponent<RectTransform>();
-            overlayRect.anchorMin = Vector2.zero;
-            overlayRect.anchorMax = Vector2.one;
-            overlayRect.offsetMin = Vector2.zero;
-            overlayRect.offsetMax = Vector2.zero;
+            StretchFull(dialogObj.transform);
 
-            var overlayImg = dialogObj.GetComponent<Image>();
-            overlayImg.color = new Color(0.06f, 0.04f, 0.03f, 0.88f);
+            // ÖNEMLİ: Dialog_Encounter GameObject'i sahnede DAİMA AKTİF kalmalıdır!
+            // Çünkü üzerinde EncounterDialogUI scripti bulunur ve eventleri dinlemek için Start/Awake çalışmalıdır!
+            dialogObj.SetActive(true);
 
-            // Modal Kartı (Card_Modal)
-            var cardTrans = dialogObj.transform.Find("Card_Modal");
+            // 1. Karartma Perdesi ve Modal Taşıyıcı (Panel_Backdrop)
+            var backdropTrans = dialogObj.transform.Find("Panel_Backdrop");
+            GameObject backdropObj;
+            if (backdropTrans == null)
+            {
+                backdropObj = new GameObject("Panel_Backdrop", typeof(RectTransform), typeof(Image));
+                backdropObj.transform.SetParent(dialogObj.transform, false);
+            }
+            else
+            {
+                backdropObj = backdropTrans.gameObject;
+            }
+
+            StretchFull(backdropObj.transform);
+            var overlayImg = backdropObj.GetComponent<Image>();
+            if (overlayImg == null) overlayImg = backdropObj.AddComponent<Image>();
+            overlayImg.color = new Color(0.06f, 0.04f, 0.03f, 0.88f); // Karartma
+
+            // 2. Modal Kartı (Card_Modal)
+            var cardTrans = backdropObj.transform.Find("Card_Modal");
+            if (cardTrans == null)
+            {
+                // Eğer daha önceden dialogObj'nin altındaysa backdropObj altına taşı
+                var oldCardTrans = dialogObj.transform.Find("Card_Modal");
+                if (oldCardTrans != null)
+                {
+                    oldCardTrans.SetParent(backdropObj.transform, false);
+                    cardTrans = oldCardTrans;
+                }
+            }
+
             GameObject cardObj;
             if (cardTrans == null)
             {
                 cardObj = new GameObject("Card_Modal", typeof(RectTransform), typeof(Image));
-                cardObj.transform.SetParent(dialogObj.transform, false);
+                cardObj.transform.SetParent(backdropObj.transform, false);
             }
             else
             {
@@ -441,6 +472,7 @@ namespace Kervan.Editor
             cardRect.sizeDelta = new Vector2(1040, 680);
 
             var cardImg = cardObj.GetComponent<Image>();
+            if (cardImg == null) cardImg = cardObj.AddComponent<Image>();
             cardImg.color = ColorCardLeather;
 
             // Metinler ve Butonlar (Card_Modal içinde)
@@ -484,7 +516,7 @@ namespace Kervan.Editor
             }
 
             var so = new SerializedObject(encounterUI);
-            so.FindProperty("_dialogRoot").objectReferenceValue = dialogObj;
+            so.FindProperty("_dialogRoot").objectReferenceValue = backdropObj;
             so.FindProperty("_titleText").objectReferenceValue = titleTxt;
             so.FindProperty("_descriptionText").objectReferenceValue = descTxt;
             so.FindProperty("_threatComparisonText").objectReferenceValue = threatTxt;
@@ -496,8 +528,8 @@ namespace Kervan.Editor
             so.FindProperty("_continueJourneyButton").objectReferenceValue = continueBtn;
             so.ApplyModifiedPropertiesWithoutUndo();
 
-            // Başlangıçta diyaloğu gizle (yalnızca tehlike patlak verdiğinde açılacak)
-            dialogObj.SetActive(false);
+            // Yalnızca karartma perdesi ve modal kartı başlangıçta gizlenir
+            backdropObj.SetActive(false);
         }
 
         private static TextMeshProUGUI EnsureText(Transform parent, string name, string defaultText, Color color, float size, bool isBold, TextAlignmentOptions alignment)

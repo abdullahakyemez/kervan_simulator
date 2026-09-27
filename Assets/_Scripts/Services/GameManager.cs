@@ -140,6 +140,22 @@ namespace Kervan.Services
             if (newCity == null) return;
 
             CurrentCity = newCity;
+
+            // Eğer yeni şehrin pazarında mal yoksa o şehre özgü malları tohumla
+            if (CurrentCity.LocalMarket.GetAllGoods().Count == 0)
+            {
+                var tiles = new Item("iznik_tiles", "İznik Çinisi", ItemCategory.Luxury, basePrice: 35, weightKg: 3f);
+                var oliveOil = new Item("olive_oil", "Zeytinyağı", ItemCategory.Food, basePrice: 12, weightKg: 3f);
+                var silk = new Item("silk", "Bursa İpeği", ItemCategory.Textile, basePrice: 20, weightKg: 2f);
+                var wheat = new Item("wheat", "Anadolu Buğdayı", ItemCategory.Food, basePrice: 5, weightKg: 5f);
+
+                // İznik'te çini yerel olduğu için bol ve ucuz (0.7x), Bursa ipeği ise ithal olduğu için çok pahalıdır (1.6x - Tüccara büyük kâr)!
+                CurrentCity.LocalMarket.AddOrUpdateGood(tiles, stock: 35, multiplier: 0.7f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(oliveOil, stock: 40, multiplier: 0.85f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(silk, stock: 10, multiplier: 1.6f);
+                CurrentCity.LocalMarket.AddOrUpdateGood(wheat, stock: 80, multiplier: 1.1f);
+            }
+
             OnCityChanged?.Invoke(CurrentCity);
             OnNotificationSent?.Invoke($"{newCity.Name} kapılarından içeri girdiniz ({newCity.RulingFaction}).");
         }
