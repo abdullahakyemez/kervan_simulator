@@ -27,10 +27,10 @@ Bu belge, oyunumuzun ilk C# satırından mağazaya (Google Play / App Store) ç�
 - [x] 1.2 `MarketItemEntryUI` pazar satır prefab'ının oluşturulması (Alış/Satış butonları, pazar stoğu).
 - [x] 1.3 Bursa Bedesteni'nden İpek, Buğday ve Şam Çeliği alıp-satma döngüsünün test edilmesi.
 
-#### [ ] AŞAMA 2: 2D Anadolu Haritası ve Rota Seyahati
-- [ ] 2.1 `Panel_Harita` ekranının kurulması (Bursa, İznik, Söğüt, Kütahya, Konya düğüm noktaları).
-- [ ] 2.2 Rota Seçim Kartı: "Güvenli Taş Yol" vs "Kestirme Dağ Patikası" (Mesafe ve tehlike kıyası).
-- [ ] 2.3 "Yola Çık" butonu ve seyahat ilerleme çubuğu (`TravelProgressBar` - Yolda geçen günlerin akışı).
+#### [x] AŞAMA 2: 2D Anadolu Haritası ve Rota Seyahati
+- [x] 2.1 `Panel_Harita` ekranının kurulması (Bursa, İznik, Söğüt, Kütahya, Konya düğüm noktaları).
+- [x] 2.2 Rota Seçim Kartı: "Güvenli Taş Yol" vs "Kestirme Dağ Patikası" (Mesafe ve tehlike kıyası).
+- [x] 2.3 "Yola Çık" butonu ve seyahat ilerleme çubuğu (`TravelProgressBar` - Yolda geçen günlerin akışı).
 
 #### [ ] AŞAMA 3: Tehlike & Karşılaşma Karar Ekranı (Pusu / Kurt Sürüsü)
 - [ ] 3.1 `EncounterDialogUI` diyalog penceresinin Canvas'a eklenmesi.

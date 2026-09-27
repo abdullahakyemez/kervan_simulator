@@ -2,6 +2,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Kervan.Presentation;
 
 namespace Kervan.Editor
 {
@@ -65,6 +66,9 @@ namespace Kervan.Editor
 
             // 7. Harita Panelini Düzenle (Sol Rota Seçimi - Sağ Bilgi & İlerleme)
             PolishMapPanel(canvas);
+
+            // 8. Tehlike & Karşılaşma Diyaloğunu Kur/Düzenle (Aşama 3)
+            PolishOrCreateEncounterDialog(canvas);
 
             // Sahneyi kaydedilebilir olarak işaretle
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
@@ -389,6 +393,158 @@ namespace Kervan.Editor
                 PositionElement(travelSub, "Btn_AdvanceDay", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -110), new Vector2(500, 80));
                 SetButtonColor(travelSub, "Btn_AdvanceDay", ColorSoftGreen * 0.75f);
             }
+        }
+
+        private static void PolishOrCreateEncounterDialog(Canvas canvas)
+        {
+            var dialogTrans = canvas.transform.Find("Dialog_Encounter");
+            GameObject dialogObj;
+            if (dialogTrans == null)
+            {
+                dialogObj = new GameObject("Dialog_Encounter", typeof(RectTransform), typeof(Image));
+                dialogObj.transform.SetParent(canvas.transform, false);
+                Undo.RegisterCreatedObjectUndo(dialogObj, "Create Dialog_Encounter");
+            }
+            else
+            {
+                dialogObj = dialogTrans.gameObject;
+            }
+
+            // Tam ekran karartma perdesi (Raycast engelleyici)
+            var overlayRect = dialogObj.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+
+            var overlayImg = dialogObj.GetComponent<Image>();
+            overlayImg.color = new Color(0.06f, 0.04f, 0.03f, 0.88f);
+
+            // Modal Kartı (Card_Modal)
+            var cardTrans = dialogObj.transform.Find("Card_Modal");
+            GameObject cardObj;
+            if (cardTrans == null)
+            {
+                cardObj = new GameObject("Card_Modal", typeof(RectTransform), typeof(Image));
+                cardObj.transform.SetParent(dialogObj.transform, false);
+            }
+            else
+            {
+                cardObj = cardTrans.gameObject;
+            }
+
+            var cardRect = cardObj.GetComponent<RectTransform>();
+            cardRect.anchorMin = new Vector2(0.5f, 0.5f);
+            cardRect.anchorMax = new Vector2(0.5f, 0.5f);
+            cardRect.pivot = new Vector2(0.5f, 0.5f);
+            cardRect.anchoredPosition = Vector2.zero;
+            cardRect.sizeDelta = new Vector2(1040, 680);
+
+            var cardImg = cardObj.GetComponent<Image>();
+            cardImg.color = ColorCardLeather;
+
+            // Metinler ve Butonlar (Card_Modal içinde)
+            var titleTxt = EnsureText(cardObj.transform, "Txt_Title", "TEHLİKE: Haydut Pususu!", ColorGold, 28, true, TextAlignmentOptions.Center);
+            PositionElement(cardObj.transform, "Txt_Title", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -40), new Vector2(960, 48));
+
+            var descTxt = EnsureText(cardObj.transform, "Txt_Description", "Dar bir boğazdan geçerken tepelerden inen haramiler yolunuzu kesti!", ColorParchment, 20, false, TextAlignmentOptions.Center);
+            descTxt.textWrappingMode = TextWrappingModes.Normal;
+            PositionElement(cardObj.transform, "Txt_Description", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -115), new Vector2(920, 80));
+
+            var threatTxt = EnsureText(cardObj.transform, "Txt_ThreatComparison", "Düşman Gücü: 35 vs Kervan Gücü: 40", ColorGold * 0.9f, 21, true, TextAlignmentOptions.Center);
+            PositionElement(cardObj.transform, "Txt_ThreatComparison", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -180), new Vector2(920, 40));
+
+            // 4 Karar Butonu (Yan Yana)
+            var combatBtn = EnsureButton(cardObj.transform, "Btn_Combat", "Savaş!", ColorSellButton, 20);
+            PositionElement(cardObj.transform, "Btn_Combat", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-345, -20), new Vector2(210, 75));
+
+            var bribeBtn = EnsureButton(cardObj.transform, "Btn_Bribe", "Haraç Ver", ColorGold * 0.85f, 20);
+            PositionElement(cardObj.transform, "Btn_Bribe", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-115, -20), new Vector2(210, 75));
+
+            var fleeBtn = EnsureButton(cardObj.transform, "Btn_Flee", "Hızla Kaç", ColorNavButton, 20);
+            PositionElement(cardObj.transform, "Btn_Flee", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(115, -20), new Vector2(210, 75));
+
+            var negotiateBtn = EnsureButton(cardObj.transform, "Btn_Negotiate", "İkna Et", ColorBuyButton, 20);
+            PositionElement(cardObj.transform, "Btn_Negotiate", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(345, -20), new Vector2(210, 75));
+
+            // Sonuç Metni
+            var resultTxt = EnsureText(cardObj.transform, "Txt_ResultOutcome", "", ColorParchment, 22, true, TextAlignmentOptions.Center);
+            resultTxt.textWrappingMode = TextWrappingModes.Normal;
+            PositionElement(cardObj.transform, "Txt_ResultOutcome", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -135), new Vector2(940, 100));
+
+            // Yola Devam Et Butonu
+            var continueBtn = EnsureButton(cardObj.transform, "Btn_ContinueJourney", "Yola Devam Et", ColorSoftGreen * 0.75f, 22);
+            PositionElement(cardObj.transform, "Btn_ContinueJourney", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -245), new Vector2(360, 75));
+
+            // EncounterDialogUI Bileşenini Bağla
+            var encounterUI = dialogObj.GetComponent<EncounterDialogUI>();
+            if (encounterUI == null)
+            {
+                encounterUI = dialogObj.AddComponent<EncounterDialogUI>();
+            }
+
+            var so = new SerializedObject(encounterUI);
+            so.FindProperty("_dialogRoot").objectReferenceValue = dialogObj;
+            so.FindProperty("_titleText").objectReferenceValue = titleTxt;
+            so.FindProperty("_descriptionText").objectReferenceValue = descTxt;
+            so.FindProperty("_threatComparisonText").objectReferenceValue = threatTxt;
+            so.FindProperty("_resultOutcomeText").objectReferenceValue = resultTxt;
+            so.FindProperty("_combatButton").objectReferenceValue = combatBtn;
+            so.FindProperty("_bribeButton").objectReferenceValue = bribeBtn;
+            so.FindProperty("_fleeButton").objectReferenceValue = fleeBtn;
+            so.FindProperty("_negotiateButton").objectReferenceValue = negotiateBtn;
+            so.FindProperty("_continueJourneyButton").objectReferenceValue = continueBtn;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            // Başlangıçta diyaloğu gizle (yalnızca tehlike patlak verdiğinde açılacak)
+            dialogObj.SetActive(false);
+        }
+
+        private static TextMeshProUGUI EnsureText(Transform parent, string name, string defaultText, Color color, float size, bool isBold, TextAlignmentOptions alignment)
+        {
+            var trans = FindChildRecursive(parent, name);
+            TextMeshProUGUI txt;
+            if (trans == null)
+            {
+                var go = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
+                go.transform.SetParent(parent, false);
+                txt = go.GetComponent<TextMeshProUGUI>();
+                txt.text = defaultText;
+            }
+            else
+            {
+                txt = trans.GetComponent<TextMeshProUGUI>();
+            }
+
+            txt.color = color;
+            txt.fontSize = size;
+            if (isBold) txt.fontStyle |= FontStyles.Bold;
+            txt.alignment = alignment;
+            return txt;
+        }
+
+        private static Button EnsureButton(Transform parent, string name, string label, Color color, int fontSize = 21)
+        {
+            var trans = FindChildRecursive(parent, name);
+            Button btn;
+            if (trans == null)
+            {
+                var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
+                go.transform.SetParent(parent, false);
+                btn = go.GetComponent<Button>();
+
+                var textGo = new GameObject("Text (TMP)", typeof(RectTransform), typeof(TextMeshProUGUI));
+                textGo.transform.SetParent(go.transform, false);
+                var txt = textGo.GetComponent<TextMeshProUGUI>();
+                txt.text = label;
+            }
+            else
+            {
+                btn = trans.GetComponent<Button>();
+            }
+
+            SetButtonColor(parent, name, color, fontSize);
+            return btn;
         }
 
         private static void StretchFull(Transform target)
