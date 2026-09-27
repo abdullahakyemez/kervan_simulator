@@ -7,7 +7,8 @@ namespace Kervan.Editor
 {
     /// <summary>
     /// Unity Editöründe tek bir tıklama ile sahnedeki tüm UI elemanlarını
-    /// profesyonel 14. yüzyıl parşömen/deri estetiğinde mükemmel hizalayan ve renklendiren sihirbaz.
+    /// profesyonel YATAY (Landscape - 16:9 / 1920x1080) mobil/tablet formatında
+    /// 14. yüzyıl parşömen/deri estetiğinde mükemmel hizalayan ve renklendiren sihirbaz.
     /// </summary>
     public static class KervanUIStyler
     {
@@ -21,7 +22,7 @@ namespace Kervan.Editor
         private static readonly Color ColorSellButton = new Color(0.48f, 0.22f, 0.20f, 1.0f);    // Satış butonu kiremit/kırmızı
         private static readonly Color ColorNavButton = new Color(0.28f, 0.20f, 0.15f, 1.0f);     // Menü butonu kahvesi
 
-        [MenuItem("Kervan/Arayüzü Otomatik Tasarla & Hizala (Polish UI)", false, 1)]
+        [MenuItem("Kervan/Arayüzü Otomatik Tasarla & Hizala (Landscape 16:9)", false, 1)]
         public static void PolishAllUI()
         {
             var canvas = Object.FindFirstObjectByType<Canvas>();
@@ -31,7 +32,7 @@ namespace Kervan.Editor
                 return;
             }
 
-            Undo.RegisterFullObjectHierarchyUndo(canvas.gameObject, "Polish Kervan UI");
+            Undo.RegisterFullObjectHierarchyUndo(canvas.gameObject, "Polish Kervan Landscape UI");
 
             // 1. Kamerayı Koyu Tarihi Tona Çevir
             var cam = Camera.main;
@@ -41,28 +42,28 @@ namespace Kervan.Editor
                 cam.backgroundColor = new Color(0.11f, 0.08f, 0.06f, 1.0f);
             }
 
-            // 2. Canvas Scaler Kontrolü (1080x1920 Dikey Mobil)
+            // 2. Canvas Scaler Kontrolü (1920x1080 YATAY Mobil / 16:9)
             var scaler = canvas.GetComponent<CanvasScaler>();
             if (scaler != null)
             {
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1080, 1920);
+                scaler.referenceResolution = new Vector2(1920, 1080);
                 scaler.matchWidthOrHeight = 0.5f;
             }
 
-            // 3. Üst Barı Düzenle
+            // 3. Üst Barı Düzenle (Yatay 1920 px genişliğinde)
             PolishTopStatusBar(canvas);
 
             // 4. Alt Barı Düzenle
             PolishBottomNavBar(canvas);
 
-            // 5. Kervan Panelini Düzenle
+            // 5. Kervan Panelini Düzenle (Sol İstatistik - Sağ Butonlar)
             PolishCaravanPanel(canvas);
 
-            // 6. Pazar Panelini ve Satır Şablonunu Düzenle
+            // 6. Pazar Panelini ve Tek Satır Yatay Kartları Düzenle
             PolishMarketPanel(canvas);
 
-            // 7. Harita Panelini Düzenle
+            // 7. Harita Panelini Düzenle (Sol Rota Seçimi - Sağ Bilgi & İlerleme)
             PolishMapPanel(canvas);
 
             // Sahneyi kaydedilebilir olarak işaretle
@@ -70,8 +71,8 @@ namespace Kervan.Editor
                 UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene());
 
             EditorUtility.DisplayDialog(
-                "Tebrikler!",
-                "Kervan arayüzü başarıyla profesyonel 14. yüzyıl tasarım standartlarına göre hizalandı ve renklendirildi!\n\nŞimdi Game penceresinde görünümü inceleyebilirsiniz.",
+                "Yatay Format Hazır!",
+                "Kervan arayüzü başarıyla YATAY (16:9 / 1920x1080) formata uyarlandı!\n\nLütfen Unity Game penceresinde çözünürlüğü '16:9' veya '1920x1080' olarak seçtiğinizden emin olun.",
                 "Harika!"
             );
         }
@@ -91,14 +92,14 @@ namespace Kervan.Editor
                 rect.anchorMax = new Vector2(1, 1);
                 rect.pivot = new Vector2(0.5f, 1);
                 rect.anchoredPosition = Vector2.zero;
-                rect.sizeDelta = new Vector2(0, 160);
+                rect.sizeDelta = new Vector2(0, 95); // Yatayda 95 px yükseklik
             }
 
             var group = topBar.GetComponent<HorizontalLayoutGroup>();
             if (group != null)
             {
-                group.padding = new RectOffset(25, 25, 20, 20);
-                group.spacing = 15;
+                group.padding = new RectOffset(50, 50, 12, 12);
+                group.spacing = 35;
                 group.childAlignment = TextAnchor.MiddleCenter;
                 group.childControlWidth = true;
                 group.childControlHeight = true;
@@ -107,10 +108,10 @@ namespace Kervan.Editor
             }
 
             // Renkleri boya
-            SetTextColor(topBar, "GoldText", ColorGold, 26, true);
-            SetTextColor(topBar, "FoodText", ColorSoftGreen, 24, true);
-            SetTextColor(topBar, "WeightText", ColorParchment, 24, false);
-            SetTextColor(topBar, "LocationText", ColorGold, 24, true);
+            SetTextColor(topBar, "GoldText", ColorGold, 23, true, TextAlignmentOptions.Center);
+            SetTextColor(topBar, "FoodText", ColorSoftGreen, 21, true, TextAlignmentOptions.Center);
+            SetTextColor(topBar, "WeightText", ColorParchment, 21, false, TextAlignmentOptions.Center);
+            SetTextColor(topBar, "LocationText", ColorGold, 22, true, TextAlignmentOptions.Center);
         }
 
         private static void PolishBottomNavBar(Canvas canvas)
@@ -128,14 +129,14 @@ namespace Kervan.Editor
                 rect.anchorMax = new Vector2(1, 0);
                 rect.pivot = new Vector2(0.5f, 0);
                 rect.anchoredPosition = Vector2.zero;
-                rect.sizeDelta = new Vector2(0, 150);
+                rect.sizeDelta = new Vector2(0, 95); // Yatayda 95 px yükseklik
             }
 
             var group = navBar.GetComponent<HorizontalLayoutGroup>();
             if (group != null)
             {
-                group.padding = new RectOffset(20, 20, 15, 15);
-                group.spacing = 15;
+                group.padding = new RectOffset(200, 200, 10, 10);
+                group.spacing = 30;
                 group.childAlignment = TextAnchor.MiddleCenter;
                 group.childControlWidth = true;
                 group.childControlHeight = true;
@@ -152,8 +153,13 @@ namespace Kervan.Editor
                 var txt = child.GetComponentInChildren<TextMeshProUGUI>();
                 if (txt != null)
                 {
+                    var tRect = txt.rectTransform;
+                    tRect.anchorMin = Vector2.zero;
+                    tRect.anchorMax = Vector2.one;
+                    tRect.offsetMin = Vector2.zero;
+                    tRect.offsetMax = Vector2.zero;
                     txt.color = ColorParchment;
-                    txt.fontSize = 24;
+                    txt.fontSize = 22;
                     txt.fontStyle = FontStyles.Bold;
                     txt.alignment = TextAlignmentOptions.Center;
                 }
@@ -173,29 +179,29 @@ namespace Kervan.Editor
             {
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.one;
-                rect.offsetMin = new Vector2(20, 155);
-                rect.offsetMax = new Vector2(-20, -165);
+                rect.offsetMin = new Vector2(40, 105);
+                rect.offsetMax = new Vector2(-40, -105);
             }
 
-            // Metinler ve Konumlandırma
-            PositionElement(panel, "Txt_Stats", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -30), new Vector2(960, 250));
+            // Sol Sütun: Kervan İstatistikleri
+            PositionElement(panel, "Txt_Stats", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-440, 0), new Vector2(880, 500));
             var statsText = FindChildRecursive(panel, "Txt_Stats")?.GetComponent<TextMeshProUGUI>();
             if (statsText != null)
             {
                 statsText.color = ColorParchment;
-                statsText.fontSize = 22;
-                statsText.lineSpacing = 12;
+                statsText.fontSize = 23;
+                statsText.lineSpacing = 16;
                 statsText.alignment = TextAlignmentOptions.TopLeft;
             }
 
-            // Buton Konumları
-            PositionElement(panel, "Btn_HireGuard", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(-240, -320), new Vector2(460, 85));
+            // Sağ Sütun: Aksiyon Butonları
+            PositionElement(panel, "Btn_HireGuard", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(450, 100), new Vector2(550, 80));
             SetButtonColor(panel, "Btn_HireGuard", ColorBuyButton);
 
-            PositionElement(panel, "Btn_BuyCamel", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(240, -320), new Vector2(460, 85));
+            PositionElement(panel, "Btn_BuyCamel", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(450, 0), new Vector2(550, 80));
             SetButtonColor(panel, "Btn_BuyCamel", ColorNavButton);
 
-            PositionElement(panel, "Btn_BuyFood", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -430), new Vector2(520, 85));
+            PositionElement(panel, "Btn_BuyFood", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(450, -100), new Vector2(550, 80));
             SetButtonColor(panel, "Btn_BuyFood", ColorSoftGreen * 0.7f);
         }
 
@@ -212,30 +218,45 @@ namespace Kervan.Editor
             {
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.one;
-                rect.offsetMin = new Vector2(20, 155);
-                rect.offsetMax = new Vector2(-20, -165);
+                rect.offsetMin = new Vector2(40, 105);
+                rect.offsetMax = new Vector2(-40, -105);
             }
 
             // Başlıklar
-            var title = panel.Find("Txt_BazaarTitle")?.GetComponent<TextMeshProUGUI>();
+            PositionElement(panel, "Txt_BazaarTitle", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -18), new Vector2(1800, 40));
+            var title = FindChildRecursive(panel, "Txt_BazaarTitle")?.GetComponent<TextMeshProUGUI>();
             if (title != null)
             {
                 title.color = ColorGold;
-                title.fontSize = 30;
+                title.fontSize = 28;
                 title.fontStyle = FontStyles.Bold;
                 title.alignment = TextAlignmentOptions.Center;
             }
 
-            var subtitle = panel.Find("Txt_BazaarSubtitle")?.GetComponent<TextMeshProUGUI>();
+            PositionElement(panel, "Txt_BazaarSubtitle", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -52), new Vector2(1800, 28));
+            var subtitle = FindChildRecursive(panel, "Txt_BazaarSubtitle")?.GetComponent<TextMeshProUGUI>();
             if (subtitle != null)
             {
                 subtitle.color = new Color(0.85f, 0.78f, 0.68f);
-                subtitle.fontSize = 19;
+                subtitle.fontSize = 17;
                 subtitle.fontStyle = FontStyles.Italic;
                 subtitle.alignment = TextAlignmentOptions.Center;
             }
 
             // Scroll View & Content
+            var scroll = panel.Find("Scroll_Goods");
+            if (scroll != null)
+            {
+                var sRect = scroll.GetComponent<RectTransform>();
+                if (sRect != null)
+                {
+                    sRect.anchorMin = Vector2.zero;
+                    sRect.anchorMax = Vector2.one;
+                    sRect.offsetMin = new Vector2(20, 15);
+                    sRect.offsetMax = new Vector2(-20, -85);
+                }
+            }
+
             var content = panel.Find("Scroll_Goods/Viewport/Content");
             if (content != null)
             {
@@ -243,9 +264,9 @@ namespace Kervan.Editor
                 if (vGroup != null)
                 {
                     vGroup.padding = new RectOffset(10, 10, 10, 10);
-                    vGroup.spacing = 15;
+                    vGroup.spacing = 10;
                     vGroup.childControlWidth = true;
-                    vGroup.childControlHeight = false; // Yüksekliği serbest bırak!
+                    vGroup.childControlHeight = false;
                     vGroup.childForceExpandWidth = true;
                     vGroup.childForceExpandHeight = false;
                 }
@@ -264,58 +285,43 @@ namespace Kervan.Editor
             var templateRect = template.GetComponent<RectTransform>();
             if (templateRect != null)
             {
-                templateRect.sizeDelta = new Vector2(templateRect.sizeDelta.x, 130);
+                templateRect.sizeDelta = new Vector2(templateRect.sizeDelta.x, 85); // Yatayda 85 px satır yüksekliği
             }
 
             var tImg = template.GetComponent<Image>();
             if (tImg != null) tImg.color = ColorCardLeather;
 
-            // 1. SOL BİLGİ ALANI (İsim, Kategori, Fiyatlar, Stok)
-            PositionElement(template, "Txt_Name", new Vector2(0, 1), new Vector2(0, 1), new Vector2(25, -22), new Vector2(400, 32));
-            SetTextColor(template, "Txt_Name", ColorGold, 24, true);
+            // Yatayda Tek Satır Hizalaması (1780 px net genişlik için sol taraftan sağa doğru düzen)
+            PositionElement(template, "Txt_Name", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(30, 14), new Vector2(310, 30));
+            SetTextColor(template, "Txt_Name", ColorGold, 21, true, TextAlignmentOptions.Left);
 
-            PositionElement(template, "Txt_Category", new Vector2(0, 1), new Vector2(0, 1), new Vector2(25, -50), new Vector2(400, 24));
-            SetTextColor(template, "Txt_Category", new Color(0.82f, 0.76f, 0.68f), 17, false);
+            PositionElement(template, "Txt_Category", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(30, -16), new Vector2(310, 24));
+            SetTextColor(template, "Txt_Category", new Color(0.82f, 0.76f, 0.68f), 15, false, TextAlignmentOptions.Left);
 
-            PositionElement(template, "Txt_BuyPrice", new Vector2(0, 1), new Vector2(0, 1), new Vector2(25, -78), new Vector2(180, 24));
-            SetTextColor(template, "Txt_BuyPrice", ColorSoftGreen, 19, true);
+            PositionElement(template, "Txt_BuyPrice", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(360, 0), new Vector2(190, 32));
+            SetTextColor(template, "Txt_BuyPrice", ColorSoftGreen, 19, true, TextAlignmentOptions.Left);
 
-            PositionElement(template, "Txt_SellPrice", new Vector2(0, 1), new Vector2(0, 1), new Vector2(210, -78), new Vector2(180, 24));
-            SetTextColor(template, "Txt_SellPrice", ColorGold * 0.9f, 19, true);
+            PositionElement(template, "Txt_SellPrice", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(570, 0), new Vector2(190, 32));
+            SetTextColor(template, "Txt_SellPrice", ColorGold * 0.9f, 19, true, TextAlignmentOptions.Left);
 
-            PositionElement(template, "Txt_MarketStock", new Vector2(0, 1), new Vector2(0, 1), new Vector2(25, -104), new Vector2(180, 22));
-            SetTextColor(template, "Txt_MarketStock", ColorParchment, 17, false);
+            PositionElement(template, "Txt_MarketStock", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(780, 0), new Vector2(190, 32));
+            SetTextColor(template, "Txt_MarketStock", ColorParchment, 17, false, TextAlignmentOptions.Left);
 
-            PositionElement(template, "Txt_CaravanAmount", new Vector2(0, 1), new Vector2(0, 1), new Vector2(210, -104), new Vector2(180, 22));
-            SetTextColor(template, "Txt_CaravanAmount", ColorGold, 17, true);
+            PositionElement(template, "Txt_CaravanAmount", new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(990, 0), new Vector2(190, 32));
+            SetTextColor(template, "Txt_CaravanAmount", ColorGold, 17, true, TextAlignmentOptions.Left);
 
-            // 2. SAĞ AKSİYON BUTONLARI (Alış ve Satış)
-            PositionElement(template, "Btn_BuyOne", new Vector2(1, 1), new Vector2(1, 1), new Vector2(-280, -32), new Vector2(130, 48));
+            // Butonlar Sağ Kenara Yaslanır (Hiçbiri üst üste binmez)
+            PositionElement(template, "Btn_BuyOne", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-395, 0), new Vector2(110, 52));
             SetButtonColor(template, "Btn_BuyOne", ColorBuyButton);
 
-            PositionElement(template, "Btn_BuyFive", new Vector2(1, 1), new Vector2(1, 1), new Vector2(-135, -32), new Vector2(130, 48));
+            PositionElement(template, "Btn_BuyFive", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-275, 0), new Vector2(110, 52));
             SetButtonColor(template, "Btn_BuyFive", ColorBuyButton * 0.88f);
 
-            PositionElement(template, "Btn_SellOne", new Vector2(1, 1), new Vector2(1, 1), new Vector2(-280, -90), new Vector2(130, 48));
+            PositionElement(template, "Btn_SellOne", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-155, 0), new Vector2(110, 52));
             SetButtonColor(template, "Btn_SellOne", ColorSellButton);
 
-            PositionElement(template, "Btn_SellAll", new Vector2(1, 1), new Vector2(1, 1), new Vector2(-135, -90), new Vector2(130, 48));
+            PositionElement(template, "Btn_SellAll", new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-30, 0), new Vector2(115, 52));
             SetButtonColor(template, "Btn_SellAll", ColorSellButton * 0.85f);
-        }
-
-        private static void PositionElement(Transform parent, string childName, Vector2 anchorMin, Vector2 anchorMax, Vector2 pos, Vector2 size)
-        {
-            var child = parent.Find(childName);
-            if (child == null) return;
-
-            var rect = child.GetComponent<RectTransform>();
-            if (rect == null) return;
-
-            rect.anchorMin = anchorMin;
-            rect.anchorMax = anchorMax;
-            rect.pivot = new Vector2(anchorMin.x == 1 ? 0 : 0, 1);
-            rect.anchoredPosition = pos;
-            rect.sizeDelta = size;
         }
 
         private static void PolishMapPanel(Canvas canvas)
@@ -331,32 +337,34 @@ namespace Kervan.Editor
             {
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.one;
-                rect.offsetMin = new Vector2(20, 155);
-                rect.offsetMax = new Vector2(-20, -165);
+                rect.offsetMin = new Vector2(40, 105);
+                rect.offsetMax = new Vector2(-40, -105);
             }
 
-            // 1. Rota Seçim Alt Paneli (SubPanel_RouteSelection)
+            // 1. Rota Seçim Alt Paneli (SubPanel_RouteSelection) - Sol ve Sağ Sütun Olarak Düzenlenir
             var routeSub = FindChildRecursive(panel, "SubPanel_RouteSelection");
             if (routeSub != null)
             {
                 StretchFull(routeSub);
 
-                // Mevcut Şehir Başlığı
-                PositionElement(routeSub, "Txt_CurrentLocation", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -35), new Vector2(960, 60));
-                SetTextColor(routeSub, "Txt_CurrentLocation", ColorGold, 26, true, TextAlignmentOptions.Center);
+                // SOL SÜTUN: Rota Seçenekleri
+                PositionElement(routeSub, "Txt_CurrentLocation", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-450, 200), new Vector2(880, 50));
+                SetTextColor(routeSub, "Txt_CurrentLocation", ColorGold, 25, true, TextAlignmentOptions.Center);
 
-                // Rota Seçim Butonları (Yan Yana)
-                PositionElement(routeSub, "Btn_RouteHighway", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(-240, -130), new Vector2(460, 85));
+                PositionElement(routeSub, "Btn_RouteHighway", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-450, 110), new Vector2(880, 75));
                 SetButtonColor(routeSub, "Btn_RouteHighway", ColorBuyButton);
 
-                PositionElement(routeSub, "Btn_RouteMountain", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(240, -130), new Vector2(460, 85));
+                PositionElement(routeSub, "Btn_RouteMountain", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-450, 15), new Vector2(880, 75));
                 SetButtonColor(routeSub, "Btn_RouteMountain", ColorSellButton);
 
-                // Rota Başlık ve Detay Kartı
-                PositionElement(routeSub, "Txt_RouteTitle", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -210), new Vector2(960, 50));
+                PositionElement(routeSub, "Btn_StartJourney", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-450, -110), new Vector2(880, 85));
+                SetButtonColor(routeSub, "Btn_StartJourney", ColorGold * 0.85f);
+
+                // SAĞ SÜTUN: Rota Detayları
+                PositionElement(routeSub, "Txt_RouteTitle", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(450, 170), new Vector2(880, 45));
                 SetTextColor(routeSub, "Txt_RouteTitle", ColorGold, 24, true, TextAlignmentOptions.Center);
 
-                PositionElement(routeSub, "Txt_RouteDetails", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -370), new Vector2(920, 260));
+                PositionElement(routeSub, "Txt_RouteDetails", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(450, -10), new Vector2(880, 260));
                 var detailsTxt = FindChildRecursive(routeSub, "Txt_RouteDetails")?.GetComponent<TextMeshProUGUI>();
                 if (detailsTxt != null)
                 {
@@ -365,10 +373,6 @@ namespace Kervan.Editor
                     detailsTxt.lineSpacing = 14;
                     detailsTxt.alignment = TextAlignmentOptions.TopLeft;
                 }
-
-                // Yola Çık Butonu
-                PositionElement(routeSub, "Btn_StartJourney", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -560), new Vector2(560, 95));
-                SetButtonColor(routeSub, "Btn_StartJourney", ColorGold * 0.85f);
             }
 
             // 2. Seyahat İlerleme Alt Paneli (SubPanel_TravelProgress)
@@ -377,12 +381,12 @@ namespace Kervan.Editor
             {
                 StretchFull(travelSub);
 
-                PositionElement(travelSub, "Txt_TravelStatus", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -160), new Vector2(960, 70));
+                PositionElement(travelSub, "Txt_TravelStatus", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 100), new Vector2(1200, 60));
                 SetTextColor(travelSub, "Txt_TravelStatus", ColorGold, 28, true, TextAlignmentOptions.Center);
 
-                PositionElement(travelSub, "Slider_Progress", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -260), new Vector2(850, 45));
+                PositionElement(travelSub, "Slider_Progress", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0), new Vector2(1000, 40));
 
-                PositionElement(travelSub, "Btn_AdvanceDay", new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -390), new Vector2(520, 95));
+                PositionElement(travelSub, "Btn_AdvanceDay", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -110), new Vector2(500, 80));
                 SetButtonColor(travelSub, "Btn_AdvanceDay", ColorSoftGreen * 0.75f);
             }
         }
@@ -412,6 +416,27 @@ namespace Kervan.Editor
             return null;
         }
 
+        private static void PositionElement(Transform parent, string childName, Vector2 anchorMin, Vector2 anchorMax, Vector2 pos, Vector2 size, Vector2? customPivot = null)
+        {
+            var child = FindChildRecursive(parent, childName);
+            if (child == null) return;
+
+            var rect = child.GetComponent<RectTransform>();
+            if (rect == null) return;
+
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+
+            // Eğer özel pivot verilmediyse, anchor'a göre ideal pivotu otomatik belirle:
+            // Sol kenara yaslıysa pivot.x = 0, sağ kenara yaslıysa pivot.x = 1, ortalıysa 0.5
+            float pivotX = anchorMin.x == 0 && anchorMax.x == 0 ? 0f : (anchorMin.x == 1 && anchorMax.x == 1 ? 1f : 0.5f);
+            float pivotY = anchorMin.y == 0 && anchorMax.y == 0 ? 0f : (anchorMin.y == 1 && anchorMax.y == 1 ? 1f : 0.5f);
+
+            rect.pivot = customPivot ?? new Vector2(pivotX, pivotY);
+            rect.anchoredPosition = pos;
+            rect.sizeDelta = size;
+        }
+
         private static void SetTextColor(Transform parent, string childName, Color color, float size, bool isBold, TextAlignmentOptions alignment = TextAlignmentOptions.Left)
         {
             var child = FindChildRecursive(parent, childName);
@@ -427,7 +452,7 @@ namespace Kervan.Editor
             }
         }
 
-        private static void SetButtonColor(Transform parent, string buttonName, Color color)
+        private static void SetButtonColor(Transform parent, string buttonName, Color color, int fontSize = 21)
         {
             var btn = FindChildRecursive(parent, buttonName);
             if (btn == null) return;
@@ -438,10 +463,19 @@ namespace Kervan.Editor
             var txt = btn.GetComponentInChildren<TextMeshProUGUI>();
             if (txt != null)
             {
+                var txtRect = txt.rectTransform;
+                txtRect.anchorMin = Vector2.zero;
+                txtRect.anchorMax = Vector2.one;
+                txtRect.offsetMin = new Vector2(6, 4);
+                txtRect.offsetMax = new Vector2(-6, -4);
                 txt.color = ColorParchment;
-                txt.fontSize = 24;
+                txt.fontSize = fontSize;
                 txt.fontStyle |= FontStyles.Bold;
                 txt.alignment = TextAlignmentOptions.Center;
+                txt.enableWordWrapping = true;
+                txt.enableAutoSizing = true;
+                txt.fontSizeMin = 13;
+                txt.fontSizeMax = fontSize;
             }
         }
     }

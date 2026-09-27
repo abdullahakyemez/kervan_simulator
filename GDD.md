@@ -8,7 +8,7 @@
 * **Mekân:** Anadolu (Söğüt, İznik, Bursa, Kütahya, Konya, Trabzon, Sinop, Kastamonu vb.).
 * **Karakter:** Osmanlı mensubu bir Türk tüccar. Hem ticaret zekası hem de gerektiğinde kılıç kullanabilen savaşçı kökenli bir alp/gazi karakteri.
 * **Ana Tür:** 2D Ticaret Simülasyonu, Rota & Kervan Yönetimi, Taktiksel Karşılaşmalar ve Hikayeli Rol Yapma (RPG).
-* **Görsel Stil:** 2D Flat / Modern Vektörel Selçuklu-Osmanlı Minyatür & Parşömen estetiği (Pentiment, Bad North, Reigns referansı).
+* **Görsel Stil & Ekran Formatı:** 2D Flat / Yatay Oynanış (Landscape - 16:9 / 1920x1080), Modern Vektörel Selçuklu-Osmanlı Minyatür & Parşömen estetiği.
 
 ---
 
