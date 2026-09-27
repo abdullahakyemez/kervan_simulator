@@ -22,10 +22,10 @@ Bu belge, oyunumuzun ilk C# satırından mağazaya (Google Play / App Store) ç�
 ### [ ] BÖLÜM II: GÖRSEL SAHNE & OYNANIŞ ENTEGRASYONU (ŞU AN BURADAYIZ)
 *Bu bölümde yazdığımız tüm C# mekaniklerini ekranda tek tek oynanabilir hale getiriyoruz.*
 
-#### [ ] AŞAMA 1: Pazar (Bedesten) Ekranının Kurulması
-- [ ] 1.1 `Panel_Pazar` arayüzünün Canvas içine yerleştirilmesi (Kaydırılabilir ScrollView listesi).
-- [ ] 1.2 `MarketItemEntryUI` pazar satır prefab'ının oluşturulması (Alış/Satış butonları, pazar stoğu).
-- [ ] 1.3 Bursa Bedesteni'nden İpek, Buğday ve Şam Çeliği alıp-satma döngüsünün test edilmesi.
+#### [x] AŞAMA 1: Pazar (Bedesten) Ekranının Kurulması
+- [x] 1.1 `Panel_Pazar` arayüzünün Canvas içine yerleştirilmesi (Kaydırılabilir ScrollView listesi).
+- [x] 1.2 `MarketItemEntryUI` pazar satır prefab'ının oluşturulması (Alış/Satış butonları, pazar stoğu).
+- [x] 1.3 Bursa Bedesteni'nden İpek, Buğday ve Şam Çeliği alıp-satma döngüsünün test edilmesi.
 
 #### [ ] AŞAMA 2: 2D Anadolu Haritası ve Rota Seyahati
 - [ ] 2.1 `Panel_Harita` ekranının kurulması (Bursa, İznik, Söğüt, Kütahya, Konya düğüm noktaları).
